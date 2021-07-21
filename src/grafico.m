@@ -12,5 +12,3 @@ func = @(p) [p(end)];
 result = splitapply(func, GA.Melhor, group);
 v = var(result)
 s = std(result)
-m = mean(result)
-

@@ -67,6 +67,6 @@ public class Individuo implements Comparable<Individuo>{
 
     @Override
     public int compareTo(Individuo individuo) {
-        return (int) ((this.getFitness()-individuo.getFitness())*100000);
+        return Double.compare(this.getFitness(),individuo.getFitness());
     }
 }
