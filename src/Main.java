@@ -34,9 +34,8 @@ public class Main {
 
     public static int escolherProgenitor(int tamPopulacao){
         int prob = ThreadLocalRandom.current().nextInt(0,tamPopulacao*((tamPopulacao+1)/2));
-        int soma = 0;
 
-        for (int i = tamPopulacao, j = 0; i > 0; i--, j++) {
+        for (int i = tamPopulacao, j = 0, soma = 0; i > 0; i--, j++) {
             soma += i;
             if (soma > prob)
                 return j;
