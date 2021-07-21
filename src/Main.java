@@ -21,15 +21,27 @@ public class Main {
         return new Individuo(gene1, gene2);
     }
 
-    public static void mutacao(Individuo pai, double taxaMutacao, BitSet gene1, BitSet gene2, int i) {
+    public static void mutacao(Individuo progenitor, double taxaMutacao, BitSet gene1, BitSet gene2, int i) {
         if (ThreadLocalRandom.current().nextDouble(100) < taxaMutacao) {
-            gene1.set(i, !pai.getGene1().get(i));
-            gene2.set(i, !pai.getGene2().get(i));
+            gene1.set(i, !progenitor.getGene1().get(i));
+            gene2.set(i, !progenitor.getGene2().get(i));
         }
         else {
-            gene1.set(i, pai.getGene1().get(i));
-            gene2.set(i, pai.getGene2().get(i));
+            gene1.set(i, progenitor.getGene1().get(i));
+            gene2.set(i, progenitor.getGene2().get(i));
         }
+    }
+
+    public static int escolherProgenitor(int tamPopulacao){
+        int prob = ThreadLocalRandom.current().nextInt(0,tamPopulacao*((tamPopulacao+1)/2));
+        int soma = 0;
+
+        for (int i = tamPopulacao, j = 0; i > 0; i--, j++) {
+            soma += i;
+            if (soma > prob)
+                return j;
+        }
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -77,21 +89,13 @@ public class Main {
 
             for (int j = 1; j < tamPopulacao; j++) {
 
-                double probMae, probPai = ThreadLocalRandom.current().nextDouble(0,(double)1/(2+tamPopulacao));
-                int nMae, nPai = (int) (Math.log((1/probPai)-tamPopulacao)-1);
-
-                if (nPai > tamPopulacao-1)
-                    nPai = tamPopulacao-1;
+                int nMae, nPai = escolherProgenitor(tamPopulacao);
 
                 do {
-                    probMae = ThreadLocalRandom.current().nextDouble(0,(double)1/(2+tamPopulacao));
-                    nMae = (int) (Math.log((1/probMae)-tamPopulacao)-1);
-                } while (nMae==nPai || nMae > (tamPopulacao-1));
-
-                System.out.println("Prob pai: "+probPai+" Pai: "+nPai + "      Prob mae: "+probMae+" Mae: "+nMae);
+                    nMae = escolherProgenitor(tamPopulacao);
+                } while (nMae==nPai);
 
                 geracaoIndividuos.add(cruzamento(individuos.get(i-1).get(nPai),individuos.get(i-1).get(nMae),taxaMutacao));
-
 
                 soma += geracaoIndividuos.get(j).getFitness();
             }
@@ -101,7 +105,7 @@ public class Main {
         }
 
         for (int i = 0; i < numGeracao; i++) {
-            System.out.println("Melhor: "+individuos.get(i).get(0).getFitness()+"  Média: "+media[i]+" \t  Pior: "+individuos.get(i).get(tamPopulacao-1).getFitness());
+            System.out.println("Melhor: "+individuos.get(i).get(0).getFitness()+"  Média: "+media[i]+"  Pior: "+individuos.get(i).get(tamPopulacao-1).getFitness());
         }
     }
 
